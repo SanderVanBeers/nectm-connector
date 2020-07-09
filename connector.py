@@ -1,6 +1,5 @@
-from flask import Flask
+import flask
 from requests import post, get
-from flask_restful import Resource, Api
 from flask import request, jsonify
 HOST = 'http://localhost:27979'
 USERNAME = 'admin'
@@ -13,22 +12,6 @@ access_token = post(f"{HOST}/api/v1/auth", json={'username': USERNAME,'password'
 
 @app.route('/get', methods=['GET'])
 
-class match(self):
-    def __init__:
-        self.id =
-        self.segment =          #result['tu']['source_text']
-        self.translation =      #result['tu']['target_text']
-        self.quality =          #?
-        self.reference =        #result_data['query']
-        self.subject =          #~tag?
-        self.match =            #result['match']
-        self.usage-count =
-        self.created-by = 
-        self.last-updated-by = 
-        self.create-date =
-        self.last-update-date = 
-    def get(self):
-        pass
 
 def get_fuzzy_match():
     data = request.get_json()
@@ -40,8 +23,21 @@ def get_fuzzy_match():
     else:
         slang = langpair.split('-')[0]
         tlang = langpair.split('-')[1]
-    result = get(f"{HOST}/api/v1/tm", headers={"Authorization": f"JWT {access_token}", "Content-Type":"application/json"}, json={"q":q, "slang": slang, "tlang": tlang, "concordance": "true"})
-    result_data = result.json()
-    return result_data
+    result_response = get(f"{HOST}/api/v1/tm", headers={"Authorization": f"JWT {access_token}", "Content-Type":"application/json"}, json={"q":q, "slang": slang, "tlang": tlang, "concordance": "true"})
+    result_data = result_response.json()
+    matches = []
+    if len(result_data['results']):
+        results = result_data['results']
+        for result in results:
+            if not results[0]['tu']['source_text'] == " ":
+                match = {
+                    'id' : str(results.index(result)),
+                    'segment' : result['tu']['source_text'],
+                    'translation' : result['tu']['target_text'],
+                    'match' : float(result['match']/100)
+                }
+                matches.append(match)
+    return_blob = {'matches': matches}
+    return return_blob
 
 app.run()
