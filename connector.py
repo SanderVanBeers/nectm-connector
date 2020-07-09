@@ -1,5 +1,6 @@
-import flask
+from flask import Flask
 from requests import post, get
+from flask_restful import Resource, Api
 from flask import request, jsonify
 HOST = 'http://localhost:27979'
 USERNAME = 'admin'
