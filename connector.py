@@ -22,13 +22,13 @@ def get_fuzzy_match():
     else:
         slang = langpair.split('-')[0]
         tlang = langpair.split('-')[1]
-    result_response = get(f"{HOST}/api/v1/tm", headers={"Authorization": f"JWT {access_token}", "Content-Type":"application/json"}, json={"q":q, "slang": slang, "tlang": tlang, "concordance": "true"})
+    result_response = get(f"{HOST}/api/v1/tm", headers={"Authorization": f"JWT {access_token}", "Content-Type":"application/json"}, json={"q":q, "slang": slang, "tlang": tlang})
     result_data = result_response.json()
     matches = []
     if len(result_data['results']):
         results = result_data['results']
-        for result in results:
-            if not results[0]['tu']['source_text'] == " ":
+        if not results[0]['tu']['source_text'] == " ":
+            for result in results:
                 match = {
                     'id' : str(results.index(result)),
                     'segment' : result['tu']['source_text'],
