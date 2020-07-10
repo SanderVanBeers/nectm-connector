@@ -6,7 +6,6 @@ USERNAME = 'admin'
 PASSWORD = 'admin'
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
 
 access_token = post(f"{HOST}/api/v1/auth", json={'username': USERNAME,'password': PASSWORD}).json()['access_token']
 
@@ -39,5 +38,7 @@ def get_fuzzy_match():
                 matches.append(match)
     return_blob = {'matches': matches}
     return return_blob
-
-app.run()
+    
+if __name__ == "__main__":
+    app.config["DEBUG"] = True
+    app.run()
