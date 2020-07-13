@@ -10,6 +10,16 @@ app = flask.Flask(__name__)
 
 access_token = post(f"{HOST}/api/v1/auth", json={'username': USERNAME,'password': PASSWORD}).json()['access_token']
 
+class MatecatReponse:
+    def __init__(self, responseData={'translatedText': 'dit is een test', 'match': 1}, quotaFinished=False, mtLangSupported=None, responseDetails="" , responseStatus= 200, responderId='235', matches = [], exception_code=None):
+        self.responseData = responseData
+        self.quotaFinished = quotaFinished
+        self.mtLangSupported = mtLangSupported
+        self.responseDetails = responseDetails
+        self.responseStatus = responseStatus
+        self.responderId = responderId
+        self.matches = matches
+
 class TmView(MethodView):
     def get(self):
         data = request.get_json()
@@ -43,17 +53,8 @@ class TmView(MethodView):
                         'last-update-date' : 'Tue Jul 07 11:47:11 GMT 2020',
                     }
                     matches.append(match)
-        return_blob = {
-            'responseData' : {'translatedText': 'dit is een test', 'match': 1},
-            'quotaFinished' : False,
-            'mtLangSupported': None,
-            'responseDetails' : "",
-            'responseStatus' : 200,
-            'responderId': '235',
-            'matches': matches,
-            'exception_code': None
-        }
-        return return_blob
+        return_blob = MatecatReponse(matches = matches)
+        return return_blob.__dict__
 
 tm_view = TmView.as_view('tm_api')
 app.add_url_rule('/tm', methods=['GET'], view_func=tm_view)
