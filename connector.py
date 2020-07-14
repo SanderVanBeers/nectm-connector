@@ -1,3 +1,4 @@
+from inflection import dasherize
 import flask
 from requests import post, get
 from flask import request, jsonify
@@ -9,8 +10,7 @@ PASSWORD = 'admin'
 app = flask.Flask(__name__)
 
 access_token = post(f"{HOST}/api/v1/auth", json={'username': USERNAME,'password': PASSWORD}).json()['access_token']
-
-class MatecatReponse:
+class MatecatReponse():
     def __init__(self, responseData={'translatedText': 'dit is een test', 'match': 1}, quotaFinished=False, mtLangSupported=None, responseDetails="" , responseStatus= 200, responderId='235', matches = [], exception_code=None):
         self.responseData = responseData
         self.quotaFinished = quotaFinished
@@ -19,6 +19,10 @@ class MatecatReponse:
         self.responseStatus = responseStatus
         self.responderId = responderId
         self.matches = matches
+    def getDict(self):
+        dictionary = self.__dict__
+        return dict([(dasherize(k), v)
+                     for (k, v) in dictionary.items()])   
 
 class TmView(MethodView):
     def get(self):
@@ -54,10 +58,10 @@ class TmView(MethodView):
                     }
                     matches.append(match)
         return_blob = MatecatReponse(matches = matches)
-        return return_blob.__dict__
+        return return_blob.getDict()
 
 tm_view = TmView.as_view('tm_api')
-app.add_url_rule('/tm', methods=['GET'], view_func=tm_view)
+app.add_url_rule('/tm/', methods=['GET'], view_func=tm_view)
 if __name__ == "__main__":
     app.config["DEBUG"] = True
     app.run()
