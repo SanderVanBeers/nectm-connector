@@ -3,7 +3,7 @@ import flask
 from requests import post, get
 from flask import request, jsonify
 from flask.views import MethodView
-HOST = 'nectm:7979'
+HOST = 'http://nectm:7979'
 USERNAME = 'admin'
 PASSWORD = 'admin'
 
@@ -65,7 +65,7 @@ class TmView(MethodView):
         return return_blob.getDict()
 
 tm_view = TmView.as_view('tm_api')
-app.add_url_rule('/tm/', methods=['GET'], view_func=tm_view)
+app.add_url_rule('/get/', methods=['GET'], view_func=tm_view)
 if __name__ == "__main__":
     app.config["DEBUG"] = True
     app.run()
