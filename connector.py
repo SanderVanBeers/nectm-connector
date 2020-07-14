@@ -3,13 +3,14 @@ import flask
 from requests import post, get
 from flask import request, jsonify
 from flask.views import MethodView
-HOST = 'http://localhost:27979'
+HOST = 'nectm:7979'
 USERNAME = 'admin'
 PASSWORD = 'admin'
 
 app = flask.Flask(__name__)
 
-access_token = post(f"{HOST}/api/v1/auth", json={'username': USERNAME,'password': PASSWORD}).json()['access_token']
+#access_token = post(f"{HOST}/api/v1/auth", json={'username': USERNAME,'password': PASSWORD}).json()['access_token']
+
 class MatecatReponse():
     def __init__(self, responseData={'translatedText': 'dit is een test', 'match': 1}, quotaFinished=False, mtLangSupported=None, responseDetails="" , responseStatus= 200, responderId='235', matches = [], exception_code=None):
         self.responseData = responseData
@@ -19,13 +20,16 @@ class MatecatReponse():
         self.responseStatus = responseStatus
         self.responderId = responderId
         self.matches = matches
-    def getDict(self):
+
+    #method to convert the snake_case of instance variables to json standard of kebab-case expected by MateCat (kebab-case raises assign errors in Python)        
+    def getDict(self):      
         dictionary = self.__dict__
         return dict([(dasherize(k), v)
                      for (k, v) in dictionary.items()])   
 
 class TmView(MethodView):
     def get(self):
+        access_token = post(f"{HOST}/api/v1/auth", json={'username': USERNAME,'password': PASSWORD}).json()['access_token']
         data = request.get_json()
         q = data['q']
         langpair = data['langpair']
