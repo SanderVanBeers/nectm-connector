@@ -1,3 +1,9 @@
+#Connector to bridge the MateCat API to the NECTM API: https://www.nec-tm.eu/ 
+#MateCat API documentation: https://mymemory.translated.net/doc/spec.php
+#NECTM documentation: - https://www.nec-tm.eu/wp-content/uploads/2020/03/NEC-TM-UI-description.pdf
+#                     - https://www.nec-tm.eu/wp-content/uploads/2020/03/NEC-TM-Admin-UI-description.pdf
+#                     - https://www.nec-tm.eu/wp-content/uploads/2020/03/NEC-TM-Technical-description.pdf
+#NECTM source code :    https://github.com/Pangeamt/nectm/
 from inflection import dasherize
 import flask
 from requests import post, get
